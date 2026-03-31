@@ -1,0 +1,288 @@
+:root {
+  --bg-primary: #000000;
+  --text-primary: #FFFFFF;
+  --text-secondary: rgba(255, 255, 255, 0.6);
+  --highlight: rgba(255, 255, 255, 0.15);
+  
+  --spacing-1: 8px;
+  --spacing-2: 16px;
+  --spacing-3: 24px;
+  --spacing-4: 32px;
+  --spacing-5: 48px;
+  --spacing-6: 64px;
+
+  --font-inter: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  
+  --text-small: 12px;
+  --text-body: 14px;
+  --text-body-lg: 16px;
+  --text-section: 24px;
+  --text-hero: 40px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-inter);
+  line-height: 1.6;
+  letter-spacing: 0.02em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* Minimalist Utilities */
+.fullscreen {
+  width: 100vw;
+  height: 100vh;
+}
+
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+button {
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: inherit;
+  cursor: pointer;
+  transition: all 300ms ease-in-out;
+}
+
+button:focus {
+  outline: none;
+}
+
+/* Hide scrollbar for a cleaner look */
+::-webkit-scrollbar {
+  width: 0px;
+  background: transparent; /* make scrollbar invisible */
+}
+
+/* Typography styles */
+.hero-text {
+  font-size: var(--text-hero);
+  font-weight: 300;
+  letter-spacing: 0.04em;
+}
+
+.section-text {
+  font-size: var(--text-section);
+  font-weight: 400;
+}
+
+.body-text {
+  font-size: var(--text-body-lg);
+}
+
+.small-text {
+  font-size: var(--text-small);
+  color: var(--text-secondary);
+}
+
+.action-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-1);
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: var(--text-body-lg);
+  transition: all 300ms ease-in-out;
+  cursor: pointer;
+}
+
+.action-link:hover {
+  color: var(--text-primary);
+  transform: translateX(4px);
+}
+
+/* Interactive elements minimal styling */
+.glass-panel {
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+}
+
+/* Base animations */
+.fade-in {
+  animation: fadeIn 400ms ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Selection */
+::selection {
+  background: var(--highlight);
+  color: var(--text-primary);
+}
+
+/* Spinner animation for dictionary */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* DecryptedText effect */
+.decrypted-title {
+  cursor: pointer;
+}
+
+.encrypted-char {
+  opacity: 0.4;
+  transition: opacity 80ms ease;
+}
+
+.revealed-char {
+  opacity: 1;
+  transition: opacity 80ms ease;
+}
+
+/* ===== PDF.js TextLayer (built-in) CSS ===== */
+/* These styles are required for the PDF.js TextLayer class to work correctly */
+.textLayer {
+  position: absolute;
+  text-align: initial;
+  inset: 0;
+  overflow: clip;
+  opacity: 1;
+  line-height: 1;
+  -webkit-text-size-adjust: none;
+     -moz-text-size-adjust: none;
+          text-size-adjust: none;
+  forced-color-adjust: none;
+  transform-origin: 0 0;
+  caret-color: CanvasText;
+  z-index: 2;
+}
+
+.textLayer :is(span, br) {
+  color: transparent;
+  position: absolute;
+  white-space: pre;
+  cursor: text;
+  transform-origin: 0% 0%;
+}
+
+.textLayer span.markedContent {
+  top: 0;
+  height: 0;
+}
+
+.textLayer .highlight {
+  margin: -1px;
+  padding: 1px;
+  background-color: rgba(180, 0, 170, 0.2);
+  border-radius: 4px;
+}
+
+.textLayer .highlight.appended {
+  position: initial;
+}
+
+.textLayer .highlight.begin {
+  border-radius: 4px 0 0 4px;
+}
+
+.textLayer .highlight.end {
+  border-radius: 0 4px 4px 0;
+}
+
+.textLayer .highlight.middle {
+  border-radius: 0;
+}
+
+.textLayer .highlight.selected {
+  background-color: rgba(0, 100, 0, 0.2);
+}
+
+/* Text layer - Font height controls the actual rendered font size */
+.textLayer > :not(.markedContent),
+.textLayer .markedContent > :not(.markedContent) {
+  font-size: calc(var(--font-height) * max(1, var(--min-font-size, 0) / var(--font-height)));
+  line-height: calc(var(--font-height) * max(1, var(--min-font-size, 0) / var(--font-height)));
+}
+
+.textLayer > :not(.markedContent):has(+ br),
+.textLayer .markedContent > :not(.markedContent):has(+ br) {
+  min-width: 100%;
+}
+
+/* Horizontal scale for text width matching */
+.textLayer span[style*="--scale-x"] {
+  transform: scaleX(var(--scale-x));
+}
+
+/* Rotation for angled text */
+.textLayer span[style*="--rotate"] {
+  transform: rotate(var(--rotate));
+}
+
+/* Combined scale and rotation */
+.textLayer span[style*="--scale-x"][style*="--rotate"] {
+  transform: rotate(var(--rotate)) scaleX(var(--scale-x));
+}
+
+/* Selection styling - clear visible blue highlight */
+.textLayer ::selection {
+  background: rgba(50, 130, 255, 0.35);
+  color: transparent;
+}
+
+.textLayer span {
+  user-select: text;
+  -webkit-user-select: text;
+  pointer-events: all;
+}
+
+/* Hidden canvas used by TextLayer for font measurement */
+.hiddenCanvasElement {
+  position: absolute !important;
+  width: 0 !important;
+  height: 0 !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Dictionary popup scrollbar */
+.glass-panel::-webkit-scrollbar {
+  width: 4px;
+}
+
+.glass-panel::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.glass-panel::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+}
+
+/* Highlight layer */
+.highlight-layer {
+  z-index: 1;
+}
+
+.highlight-rect:hover {
+  opacity: 0.55 !important;
+  outline: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Highlight color dot hover */
+.glass-panel button:hover {
+  transform: scale(1.15);
+}
+
