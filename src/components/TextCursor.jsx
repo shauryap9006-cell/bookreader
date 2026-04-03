@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import './TextCursor.css';
 
 const TextCursor = ({
-  text = '⚛️',
+  text = '♥',
   spacing = 100,
   followMouseDirection = true,
   randomFloat = true,
@@ -76,9 +76,10 @@ const TextCursor = ({
   };
 
   useEffect(() => {
+    if (!containerRef.current) return;
+
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {

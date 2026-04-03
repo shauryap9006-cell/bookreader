@@ -3,60 +3,50 @@ import useStore from './store/useStore';
 import Dashboard from './components/Dashboard';
 import Library from './components/Library';
 import Reader from './components/Reader/Reader';
-import TextCursor from './components/TextCursor';
 import { loadLibrary } from './utils/storage';
 
 function App() {
   const { currentView, setLibrary } = useStore();
-  const [isInitializing, setIsInitializing] = useState(true);
+  const [ready, setReady] = useState(false);
 
-  // Initialize Library from localforage on mount
+  // Initialize library from storage
   useEffect(() => {
-    let mounted = true;
+    let active = true;
     (async () => {
       try {
-        const cachedLibrary = await loadLibrary();
-        if (mounted && cachedLibrary) {
-          setLibrary(cachedLibrary);
-        }
+        const lib = await loadLibrary();
+        if (active) setLibrary(lib);
       } catch (err) {
-        console.error('Error loading library:', err);
+        console.error('Init error:', err);
       } finally {
-        if (mounted) setIsInitializing(false);
+        if (active) setReady(true);
       }
     })();
-    return () => { mounted = false; };
+    return () => { active = false; };
   }, [setLibrary]);
 
-  if (isInitializing) {
-    return <div className="fullscreen flex-center" style={{ backgroundColor: '#000' }} />
-  }
+  // Ctrl+F intercept → open search (only in reader)
+  useEffect(() => {
+    const onKey = (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+        const { currentView, setSearchOpen } = useStore.getState();
+        if (currentView === 'reader') {
+          e.preventDefault();
+          setSearchOpen(true);
+        }
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
 
-  const renderView = () => {
-    switch (currentView) {
-      case 'dashboard':
-        return <Dashboard />;
-      case 'library':
-        return <Library />;
-      case 'reader':
-        return <Reader />;
-      default:
-        return <Dashboard />;
-    }
-  };
+  if (!ready) return <div className="fullscreen" style={{ background: '#000' }} />;
 
   return (
     <>
-      <TextCursor
-        text="♡"
-        spacing={80}
-        followMouseDirection
-        randomFloat
-        exitDuration={0.3}
-        removalInterval={20}
-        maxPoints={10}
-      />
-      {renderView()}
+      {currentView === 'dashboard' && <Dashboard />}
+      {currentView === 'library' && <Library />}
+      {currentView === 'reader' && <Reader />}
     </>
   );
 }

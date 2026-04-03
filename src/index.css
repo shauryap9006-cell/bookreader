@@ -1,46 +1,118 @@
-:root {
-  --bg-primary: #000000;
-  --text-primary: #FFFFFF;
-  --text-secondary: rgba(255, 255, 255, 0.6);
-  --highlight: rgba(255, 255, 255, 0.15);
-  
-  --spacing-1: 8px;
-  --spacing-2: 16px;
-  --spacing-3: 24px;
-  --spacing-4: 32px;
-  --spacing-5: 48px;
-  --spacing-6: 64px;
+/* ================================================================
+   ULTRA MINIMAL PDF READER — GLOBAL DESIGN SYSTEM
+   ================================================================
+   Colors: #000, #FFF, rgba(255,255,255,0.6), rgba(255,255,255,0.15)
+   Font: Inter
+   Motion: fade 200-300ms, movement 2-4px
+   Philosophy: No noise. No decoration. Content dominates.
+   ================================================================ */
 
-  --font-inter: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+:root {
+  --bg: #000000;
+  --fg: #FFFFFF;
+  --fg-secondary: rgba(255, 255, 255, 0.6);
+  --highlight: rgba(255, 255, 255, 0.15);
+  --reader-search-highlight: rgba(90, 163, 255, 0.24);
+  --reader-search-highlight-border: rgba(90, 163, 255, 0.34);
+
+  --reader-highlight: rgba(255, 255, 255, 0.15);
+  --reader-highlight-active: rgba(255, 255, 255, 0.25);
   
-  --text-small: 12px;
-  --text-body: 14px;
-  --text-body-lg: 16px;
-  --text-section: 24px;
-  --text-hero: 40px;
+  --color-yellow: rgba(255, 235, 59, 0.25);
+  --color-green: rgba(76, 175, 80, 0.25);
+  --color-blue: rgba(33, 150, 243, 0.25);
+  --color-pink: rgba(233, 30, 99, 0.25);
+  --color-white: rgba(255, 255, 255, 0.15);
+  
+  --color-yellow-active: rgba(255, 235, 59, 0.4);
+  --color-green-active: rgba(76, 175, 80, 0.4);
+  --color-blue-active: rgba(33, 150, 243, 0.4);
+  --color-pink-active: rgba(233, 30, 99, 0.4);
+  --color-white-active: rgba(255, 255, 255, 0.25);
+
+  --reader-note: #ffffff;
+  --reader-popup-bg: #000000;
+  --reader-popup-border: rgba(255, 255, 255, 0.15);
+
+
+  --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  --text-xs: 11px;
+  --text-sm: 13px;
+  --text-base: 15px;
+  --text-lg: 18px;
+  --text-xl: 24px;
+  --text-hero: 36px;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 16px;
+  --space-4: 24px;
+  --space-5: 32px;
+  --space-6: 48px;
+  --space-7: 64px;
+
+  --ease: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --duration: 250ms;
 }
 
-* {
+/* ── Reset ── */
+*, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
-body {
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
-  font-family: var(--font-inter);
-  line-height: 1.6;
-  letter-spacing: 0.02em;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
+html, body {
+  height: 100%;
+  overflow: hidden;
 }
 
-/* Minimalist Utilities */
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font);
+  font-size: var(--text-base);
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  height: 100%;
+}
+
+/* ── Scrollbar: invisible ── */
+::-webkit-scrollbar { width: 0; height: 0; }
+* { scrollbar-width: none; }
+
+/* ── Selection ── */
+::selection {
+  background: rgba(168, 206, 255, 0.35);
+  text-shadow: none;
+}
+::-moz-selection {
+  background: rgba(168, 206, 255, 0.35);
+  text-shadow: none;
+}
+
+/* ── Button reset ── */
+button {
+  background: none;
+  border: none;
+  color: var(--fg);
+  font-family: inherit;
+  font-size: inherit;
+  cursor: pointer;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ── Utilities ── */
 .fullscreen {
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
 }
 
 .flex-center {
@@ -49,109 +121,126 @@ body {
   align-items: center;
 }
 
-button {
-  background: none;
-  border: none;
-  color: var(--text-primary);
-  font-family: inherit;
-  font-size: inherit;
-  cursor: pointer;
-  transition: all 300ms ease-in-out;
+.dashboard-shell {
+  position: relative;
+  overflow: hidden;
 }
 
-button:focus {
-  outline: none;
+.dashboard-cursor-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
 }
 
-/* Hide scrollbar for a cleaner look */
-::-webkit-scrollbar {
-  width: 0px;
-  background: transparent; /* make scrollbar invisible */
-}
-
-/* Typography styles */
-.hero-text {
-  font-size: var(--text-hero);
-  font-weight: 300;
-  letter-spacing: 0.04em;
-}
-
-.section-text {
-  font-size: var(--text-section);
-  font-weight: 400;
-}
-
-.body-text {
-  font-size: var(--text-body-lg);
-}
-
-.small-text {
-  font-size: var(--text-small);
-  color: var(--text-secondary);
-}
-
-.action-link {
-  display: inline-flex;
+.dashboard-content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: var(--spacing-1);
-  color: var(--text-secondary);
-  text-decoration: none;
-  font-size: var(--text-body-lg);
-  transition: all 300ms ease-in-out;
-  cursor: pointer;
+  justify-content: center;
+  gap: var(--space-3);
+  padding: var(--space-4);
 }
 
-.action-link:hover {
-  color: var(--text-primary);
-  transform: translateX(4px);
-}
-
-/* Interactive elements minimal styling */
-.glass-panel {
-  background: rgba(0, 0, 0, 0.8);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 6px;
-}
-
-/* Base animations */
+/* ── Fade entrance ── */
 .fade-in {
-  animation: fadeIn 400ms ease-in-out;
+  animation: fadeIn var(--duration) var(--ease) both;
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from { opacity: 0; transform: translateY(3px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-/* Selection */
-::selection {
-  background: var(--highlight);
-  color: var(--text-primary);
-}
-
-/* Spinner animation for dictionary */
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-/* DecryptedText effect */
-.decrypted-title {
+/* ── Action link ── */
+.action-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--fg-secondary);
+  font-size: var(--text-base);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  transition: color var(--duration) var(--ease), transform var(--duration) var(--ease);
   cursor: pointer;
+  text-decoration: none;
 }
 
-.encrypted-char {
-  opacity: 0.4;
-  transition: opacity 80ms ease;
+.action-link:hover {
+  color: var(--fg);
+  transform: translateX(3px);
 }
 
-.revealed-char {
-  opacity: 1;
-  transition: opacity 80ms ease;
+.quote-glow {
+  width: min(100%, 780px);
+  margin: 0 auto var(--space-5);
 }
 
-/* ===== PDF.js TextLayer (built-in) CSS ===== */
-/* These styles are required for the PDF.js TextLayer class to work correctly */
+.quote-glow .border-glow-inner {
+  padding: 34px 38px 28px;
+}
+
+.quote-container {
+  width: 100%;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.quote-heading {
+  margin: 0;
+}
+
+.quote-text {
+  display: block;
+  width: 100%;
+  font-size: 30px;
+  font-weight: 500;
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.quote-author {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.58);
+  margin-top: 12px;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: right;
+}
+
+.dark .quote-text {
+  color: #eee;
+}
+
+.dark .quote-author {
+  color: #aaa;
+}
+
+@media (max-width: 640px) {
+  .quote-glow .border-glow-inner {
+    padding: 28px 24px 22px;
+  }
+
+  .quote-text {
+    font-size: 26px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .quote-text {
+    animation: none;
+  }
+}
+
+/* ================================================================
+   PDF.js TextLayer — Required for text selection
+   ================================================================ */
 .textLayer {
   position: absolute;
   text-align: initial;
@@ -165,6 +254,10 @@ button:focus {
   forced-color-adjust: none;
   transform-origin: 0 0;
   caret-color: CanvasText;
+  user-select: text;
+  -webkit-user-select: text;
+  cursor: text;
+  pointer-events: auto;
   z-index: 2;
 }
 
@@ -188,27 +281,12 @@ button:focus {
   border-radius: 4px;
 }
 
-.textLayer .highlight.appended {
-  position: initial;
-}
+.textLayer .highlight.appended { position: initial; }
+.textLayer .highlight.begin    { border-radius: 4px 0 0 4px; }
+.textLayer .highlight.end      { border-radius: 0 4px 4px 0; }
+.textLayer .highlight.middle   { border-radius: 0; }
+.textLayer .highlight.selected { background-color: rgba(0, 100, 0, 0.2); }
 
-.textLayer .highlight.begin {
-  border-radius: 4px 0 0 4px;
-}
-
-.textLayer .highlight.end {
-  border-radius: 0 4px 4px 0;
-}
-
-.textLayer .highlight.middle {
-  border-radius: 0;
-}
-
-.textLayer .highlight.selected {
-  background-color: rgba(0, 100, 0, 0.2);
-}
-
-/* Text layer - Font height controls the actual rendered font size */
 .textLayer > :not(.markedContent),
 .textLayer .markedContent > :not(.markedContent) {
   font-size: calc(var(--font-height) * max(1, var(--min-font-size, 0) / var(--font-height)));
@@ -220,34 +298,33 @@ button:focus {
   min-width: 100%;
 }
 
-/* Horizontal scale for text width matching */
 .textLayer span[style*="--scale-x"] {
   transform: scaleX(var(--scale-x));
 }
 
-/* Rotation for angled text */
 .textLayer span[style*="--rotate"] {
   transform: rotate(var(--rotate));
 }
 
-/* Combined scale and rotation */
 .textLayer span[style*="--scale-x"][style*="--rotate"] {
   transform: rotate(var(--rotate)) scaleX(var(--scale-x));
 }
 
-/* Selection styling - clear visible blue highlight */
 .textLayer ::selection {
-  background: rgba(50, 130, 255, 0.35);
+  background: rgba(168, 206, 255, 0.35);
+  color: transparent;
+}
+.textLayer ::-moz-selection {
+  background: rgba(168, 206, 255, 0.35);
   color: transparent;
 }
 
 .textLayer span {
   user-select: text;
   -webkit-user-select: text;
-  pointer-events: all;
+  pointer-events: auto;
 }
 
-/* Hidden canvas used by TextLayer for font measurement */
 .hiddenCanvasElement {
   position: absolute !important;
   width: 0 !important;
@@ -257,32 +334,394 @@ button:focus {
   pointer-events: none !important;
 }
 
-/* Dictionary popup scrollbar */
-.glass-panel::-webkit-scrollbar {
-  width: 4px;
+/* ================================================================
+   Reader overlays
+   ================================================================ */
+.reader-page {
+  isolation: isolate;
 }
 
-.glass-panel::-webkit-scrollbar-track {
+.reader-search-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.reader-search-highlight {
+  position: absolute;
+  border-radius: 2px;
+  background: var(--reader-search-highlight);
+  box-shadow: inset 0 0 0 1px var(--reader-search-highlight-border);
+}
+
+.reader-highlight-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.reader-highlight {
+  position: absolute;
+  border-radius: 2px;
+  background: var(--reader-highlight);
+  mix-blend-mode: multiply;
+  transition: background var(--duration) var(--ease), opacity var(--duration) var(--ease);
+}
+
+.reader-highlight.active {
+  background: var(--reader-highlight-active);
+}
+
+.note-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--reader-note);
+  border-radius: 50%;
+  position: absolute;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.35);
+}
+
+.reader-popup {
+  position: fixed;
+  z-index: 320;
+  background: var(--reader-popup-bg);
+  color: var(--fg);
+  border: 1px solid var(--reader-popup-border);
+  border-radius: 8px;
+  padding: 8px 10px;
+  max-width: 220px;
+  line-height: 1.4;
+  opacity: 0.96;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.24);
+  animation: fadeIn var(--duration) var(--ease) both;
+}
+
+.reader-popup-title {
+  font-size: 12px;
+  color: var(--fg);
+}
+
+.reader-popup-body {
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--fg-secondary);
+}
+
+.reader-popup button {
+  color: var(--fg-secondary);
+  font-size: 12px;
+  transition: color var(--duration) var(--ease);
+}
+
+.reader-popup button:hover {
+  color: var(--fg);
+}
+
+.reader-selection-menu {
+  width: min(280px, calc(100vw - 32px));
+  padding: 10px;
+}
+
+.selection-preview {
+  font-size: 12px;
+  color: var(--fg);
+  line-height: 1.45;
+}
+
+.reader-selection-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.reader-selection-actions button {
+  text-align: left;
+}
+
+.reader-action-popup {
+  max-width: none;
+  min-width: 96px;
+}
+
+.reader-action-popup button {
+  width: 100%;
+  text-align: left;
+}
+
+.note-view-popup {
+  max-width: 220px;
+}
+
+.note-box {
+  width: 180px;
+  padding: 8px;
+}
+
+.note-input {
+  width: 100%;
+  min-height: 72px;
+  margin-top: 6px;
   background: transparent;
+  color: var(--fg);
+  border: none;
+  outline: none;
+  resize: none;
+  font-family: inherit;
+  font-size: 12px;
+  line-height: 1.45;
 }
 
-.glass-panel::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 4px;
+.note-input::placeholder {
+  color: var(--fg-secondary);
 }
 
-/* Highlight layer */
-.highlight-layer {
-  z-index: 1;
+.color-swatch-container {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--reader-popup-border);
 }
 
-.highlight-rect:hover {
-  opacity: 0.55 !important;
-  outline: 1px solid rgba(255, 255, 255, 0.2);
+.color-swatch {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: transform var(--duration) var(--ease), border-color var(--duration) var(--ease);
 }
 
-/* Highlight color dot hover */
-.glass-panel button:hover {
+.color-swatch:hover, .color-swatch.active {
   transform: scale(1.15);
+  border-color: rgba(255, 255, 255, 0.8);
 }
 
+.swatch-yellow { background-color: rgb(255, 235, 59); }
+.swatch-green { background-color: rgb(76, 175, 80); }
+.swatch-blue { background-color: rgb(33, 150, 243); }
+.swatch-pink { background-color: rgb(233, 30, 99); }
+.swatch-white { background-color: rgb(220, 220, 220); border: 1px solid rgba(255, 255, 255, 0.1); }
+
+/* ================================================================
+   DARK MODE VARIANTS  (applied to body)
+   ================================================================ */
+body.mode-dim canvas {
+  filter: brightness(0.75) contrast(1.1);
+}
+
+body.mode-invert canvas {
+  filter: invert(0.88) hue-rotate(180deg) contrast(1.05);
+}
+
+/* ================================================================
+   PROGRESS BAR — fixed ultra-thin bar at bottom
+   ================================================================ */
+.progress-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  background: var(--fg);
+  opacity: 0.3;
+  transition: width 300ms var(--ease);
+  z-index: 200;
+  pointer-events: none;
+}
+
+/* ================================================================
+   SEARCH OVERLAY
+   ================================================================ */
+.search-shell {
+  position: fixed;
+  top: var(--space-4);
+  right: var(--space-4);
+  z-index: 300;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--space-2);
+  width: min(300px, calc(100vw - 24px));
+}
+
+.search-overlay {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0, 0, 0, 0.9);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  padding: 8px 10px;
+  animation: fadeIn var(--duration) var(--ease) both;
+  width: 100%;
+}
+
+.search-overlay input {
+  background: transparent;
+  border: none;
+  color: var(--fg);
+  font-family: var(--font);
+  font-size: var(--text-sm);
+  outline: none;
+  flex: 1;
+  min-width: 0;
+}
+
+.search-overlay input::placeholder {
+  color: var(--fg-secondary);
+}
+
+.search-overlay .search-count {
+  color: var(--fg-secondary);
+  font-size: var(--text-xs);
+  white-space: nowrap;
+}
+
+.search-overlay button {
+  color: var(--fg-secondary);
+  padding: 2px 4px;
+  font-size: var(--text-xs);
+  transition: color var(--duration) var(--ease);
+}
+
+.search-overlay button:hover {
+  color: var(--fg);
+}
+
+.search-results {
+  width: 100%;
+  max-height: min(240px, calc(100vh - 112px));
+  overflow-y: auto;
+  background: rgba(0, 0, 0, 0.9);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 4px;
+  animation: fadeIn var(--duration) var(--ease) both;
+}
+
+.search-results-empty {
+  padding: 12px 10px;
+  color: var(--fg-secondary);
+  font-size: var(--text-sm);
+}
+
+.search-result-item {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+  padding: 8px;
+  border-radius: 6px;
+  text-align: left;
+  transition: background var(--duration) var(--ease), color var(--duration) var(--ease);
+}
+
+.search-result-item:hover,
+.search-result-item.active {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.search-result-page {
+  color: var(--fg);
+  font-size: var(--text-xs);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.search-result-snippet {
+  color: var(--fg-secondary);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+@media (max-width: 640px) {
+  .search-shell {
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    width: min(300px, calc(100vw - 24px));
+  }
+}
+
+/* ================================================================
+   RESUME OVERLAY
+   ================================================================ */
+.resume-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 250;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
+  animation: fadeIn var(--duration) var(--ease) both;
+}
+
+.resume-card {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  align-items: center;
+}
+
+.resume-card .resume-title {
+  font-size: var(--text-lg);
+  font-weight: 300;
+  letter-spacing: 0.03em;
+}
+
+.resume-card .resume-page {
+  color: var(--fg-secondary);
+  font-size: var(--text-sm);
+}
+
+.resume-card .resume-actions {
+  display: flex;
+  gap: var(--space-4);
+}
+
+.resume-btn {
+  font-size: var(--text-sm);
+  color: var(--fg-secondary);
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  transition: all var(--duration) var(--ease);
+}
+
+.resume-btn:hover {
+  color: var(--fg);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.resume-btn.primary {
+  color: var(--fg);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+/* ================================================================
+   TIME & MODE INDICATOR
+   ================================================================ */
+.time-indicator {
+  position: fixed;
+  top: var(--space-3);
+  right: var(--space-3);
+  font-size: var(--text-xs);
+  color: var(--fg-secondary);
+  opacity: 0;
+  transition: opacity var(--duration) var(--ease);
+  z-index: 100;
+  pointer-events: none;
+}
+
+.time-indicator.visible {
+  opacity: 1;
+}

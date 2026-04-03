@@ -198,12 +198,6 @@ export default function Galaxy({
   useEffect(() => {
     if (!ctnDom.current) return;
     const ctn = ctnDom.current;
-    
-    // Ensure container has dimensions
-    if (ctn.offsetWidth === 0 || ctn.offsetHeight === 0) {
-      console.warn('Galaxy container has 0 width or height. Ensure it is styled properly.');
-    }
-
     const renderer = new Renderer({
       alpha: transparent,
       premultipliedAlpha: false
@@ -231,10 +225,8 @@ export default function Galaxy({
         );
       }
     }
-    
     window.addEventListener('resize', resize, false);
-    // Initial size setting
-    renderer.setSize(ctn.offsetWidth || innerWidth, ctn.offsetHeight || innerHeight);
+    resize();
 
     const geometry = new Triangle(gl);
     program = new Program(gl, {
@@ -288,17 +280,8 @@ export default function Galaxy({
 
       renderer.render({ scene: mesh });
     }
-    
-    // Explicitly set the canvas CSS so it doesn't break layout
-    gl.canvas.style.position = 'absolute';
-    gl.canvas.style.top = '0';
-    gl.canvas.style.left = '0';
-    gl.canvas.style.width = '100%';
-    gl.canvas.style.height = '100%';
-    gl.canvas.style.pointerEvents = 'none';
-
-    ctn.appendChild(gl.canvas);
     animateId = requestAnimationFrame(update);
+    ctn.appendChild(gl.canvas);
 
     function handleMouseMove(e) {
       const rect = ctn.getBoundingClientRect();
@@ -317,9 +300,6 @@ export default function Galaxy({
       ctn.addEventListener('mouseleave', handleMouseLeave);
     }
 
-    // Call resize again after appending just in case
-    resize();
-
     return () => {
       cancelAnimationFrame(animateId);
       window.removeEventListener('resize', resize);
@@ -327,9 +307,7 @@ export default function Galaxy({
         ctn.removeEventListener('mousemove', handleMouseMove);
         ctn.removeEventListener('mouseleave', handleMouseLeave);
       }
-      if (ctn.contains(gl.canvas)) {
-        ctn.removeChild(gl.canvas);
-      }
+      ctn.removeChild(gl.canvas);
       gl.getExtension('WEBGL_lose_context')?.loseContext();
     };
   }, [

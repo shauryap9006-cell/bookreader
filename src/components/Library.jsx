@@ -1,117 +1,181 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import useStore from '../store/useStore';
 import { loadBookFile, deleteBookFromLibrary } from '../utils/storage';
-import { ArrowLeft, Book, Trash2 } from 'lucide-react';
+
+/**
+ * LIBRARY — Grid of books with minimal metadata.
+ * Shows: cover placeholder + title + reading status + resume entry.
+ * Statuses: not_started, reading, completed.
+ */
+const statusLabel = {
+  not_started: 'Not started',
+  reading: 'Reading',
+  completed: 'Completed',
+};
 
 const Library = () => {
   const { setCurrentView, setCurrentBookId, setCurrentBookFile, setCurrentPage, library, setLibrary } = useStore();
-  const [loadingBookId, setLoadingBookId] = useState(null);
+  const [loading, setLoading] = useState(null);
 
-  const handleDeleteBook = async (e, bookId) => {
-    e.stopPropagation();
-    if (window.confirm('Delete this book from the library?')) {
-      try {
-        const updatedLibrary = await deleteBookFromLibrary(bookId);
-        setLibrary(updatedLibrary);
-      } catch (err) {
-        console.error('Failed to delete book:', err);
-        alert('Failed to delete book.');
-      }
+  const openBook = async (book) => {
+    try {
+      setLoading(book.id);
+      const data = await loadBookFile(book.id);
+      setCurrentBookId(book.id);
+      setCurrentBookFile(data);
+      setCurrentPage(book.lastPage || 1);
+      setCurrentView('reader');
+    } catch (err) {
+      console.error('Failed to open:', err);
+    } finally {
+      setLoading(null);
     }
   };
 
-  const handleOpenBook = async (book) => {
+  const deleteBook = async (e, id) => {
+    e.stopPropagation();
+    if (!window.confirm('Delete this book?')) return;
     try {
-      setLoadingBookId(book.id);
-      
-      const fileData = await loadBookFile(book.id);
-      
-      setCurrentBookId(book.id);
-      setCurrentBookFile(fileData);
-      setCurrentPage(book.lastPage || 1);
-      
-      setCurrentView('reader');
+      const updated = await deleteBookFromLibrary(id);
+      setLibrary(updated);
     } catch (err) {
-      console.error('Failed to load book from storage:', err);
-      alert('Failed to open book. It may be corrupted or deleted.');
-    } finally {
-      setLoadingBookId(null);
+      console.error('Delete failed:', err);
     }
+  };
+
+  const formatTime = (seconds) => {
+    if (!seconds || seconds < 60) return '';
+    const m = Math.floor(seconds / 60);
+    const h = Math.floor(m / 60);
+    if (h > 0) return `${h}h ${m % 60}m`;
+    return `${m}m`;
   };
 
   return (
-    <div className="fade-in" style={{ padding: 'var(--spacing-5)', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-      <header style={{ display: 'flex', alignItems: 'center', marginBottom: 'var(--spacing-6)' }}>
-        <button className="action-link" onClick={() => setCurrentView('dashboard')}>
-          <ArrowLeft size={18} />
-          Back
+    <div className="fullscreen fade-in" id="library" style={{ display: 'flex', flexDirection: 'column', padding: 'var(--space-6)' }}>
+
+      {/* Header */}
+      <header style={{ display: 'flex', alignItems: 'center', marginBottom: 'var(--space-6)' }}>
+        <button className="action-link" id="library-back-btn" onClick={() => setCurrentView('dashboard')}>
+          &larr; Back
         </button>
         <div style={{ flex: 1 }} />
-        <h2 className="section-text" style={{ textTransform: 'lowercase', letterSpacing: '0.05em' }}>library</h2>
+        <h2 style={{ fontSize: 'var(--text-xl)', fontWeight: 300, letterSpacing: '0.04em', textTransform: 'lowercase' }}>
+          library
+        </h2>
       </header>
-      
+
+      {/* Empty state */}
       {library.length === 0 ? (
-        <div className="flex-center" style={{ flex: 1, flexDirection: 'column', gap: 'var(--spacing-3)' }}>
-          <p className="body-text" style={{ color: 'var(--text-secondary)' }}>No books yet</p>
+        <div className="flex-center" style={{ flex: 1, flexDirection: 'column', gap: 'var(--space-3)' }}>
+          <p style={{ color: 'var(--fg-secondary)', fontSize: 'var(--text-sm)' }}>No books yet</p>
           <button className="action-link" onClick={() => setCurrentView('dashboard')}>
             Upload your first book &rarr;
           </button>
         </div>
       ) : (
-        <div 
-          style={{ 
-            display: 'grid', 
-            gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', 
-            gap: 'var(--spacing-5)',
-            alignItems: 'start'
+
+        /* Book Grid */
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
+            gap: 'var(--space-5)',
+            flex: 1,
+            overflow: 'auto',
+            alignContent: 'start',
           }}
         >
           {library.map((book) => (
-            <div 
-              key={book.id} 
+            <div
+              key={book.id}
+              onClick={() => openBook(book)}
               style={{
                 display: 'flex',
                 flexDirection: 'column',
-                gap: 'var(--spacing-2)',
+                gap: 'var(--space-2)',
                 cursor: 'pointer',
-                opacity: loadingBookId === book.id ? 0.5 : 1,
+                opacity: loading === book.id ? 0.4 : 1,
+                transition: 'opacity var(--duration) var(--ease)',
               }}
-              onClick={() => handleOpenBook(book)}
             >
-              <div 
-                style={{ 
-                  aspectRatio: '1 / 1.4', 
-                  backgroundColor: '#111', 
-                  border: '1px solid rgba(255, 255, 255, 0.05)',
+              {/* Cover placeholder */}
+              <div
+                style={{
+                  aspectRatio: '1 / 1.45',
+                  background: '#0a0a0a',
                   display: 'flex',
                   justifyContent: 'center',
                   alignItems: 'center',
-                  position: 'relative'
+                  position: 'relative',
+                  overflow: 'hidden',
+                  transition: 'background var(--duration) var(--ease)',
                 }}
+                onMouseEnter={(e) => { e.currentTarget.style.background = '#111'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = '#0a0a0a'; }}
               >
-                <Book size={32} color="var(--text-secondary)" />
+                {/* Minimal book icon — just two lines */}
+                <svg width="28" height="36" viewBox="0 0 28 36" fill="none" style={{ opacity: 0.15 }}>
+                  <rect x="2" y="2" width="24" height="32" rx="1" stroke="white" strokeWidth="1"/>
+                  <line x1="8" y1="10" x2="20" y2="10" stroke="white" strokeWidth="0.5"/>
+                  <line x1="8" y1="14" x2="16" y2="14" stroke="white" strokeWidth="0.5"/>
+                </svg>
+
+                {/* Delete */}
                 <button
-                  onClick={(e) => handleDeleteBook(e, book.id)}
+                  onClick={(e) => deleteBook(e, book.id)}
                   style={{
                     position: 'absolute',
-                    top: '8px',
-                    right: '8px',
-                    padding: '4px',
-                    background: 'rgba(0,0,0,0.6)',
-                    borderRadius: '4px',
-                    color: 'var(--text-secondary)'
+                    top: 'var(--space-2)',
+                    right: 'var(--space-2)',
+                    color: 'var(--fg-secondary)',
+                    opacity: 0,
+                    transition: 'opacity var(--duration) var(--ease), color var(--duration) var(--ease)',
+                    fontSize: 'var(--text-xs)',
                   }}
-                  onMouseEnter={(e) => e.currentTarget.style.color = '#ff4444'}
-                  onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-secondary)'}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.color = '#fff';
+                    e.currentTarget.style.opacity = '1';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.color = 'var(--fg-secondary)';
+                  }}
+                  className="book-delete-btn"
                 >
-                  <Trash2 size={16} />
+                  ×
                 </button>
+
+                {/* Reading status indicator */}
+                {book.status === 'reading' && (
+                  <div style={{
+                    position: 'absolute',
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    height: '2px',
+                    background: 'var(--fg)',
+                    opacity: 0.3,
+                    width: book.totalPages ? `${((book.lastPage || 1) / book.totalPages) * 100}%` : '0%',
+                  }} />
+                )}
               </div>
+
+              {/* Title & meta */}
               <div>
-                <p className="body-text" style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                <p style={{
+                  fontSize: 'var(--text-sm)',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                  fontWeight: 400,
+                }}>
                   {book.title}
                 </p>
-                <p className="small-text">Page {book.lastPage || 1}</p>
+                <p style={{ fontSize: 'var(--text-xs)', color: 'var(--fg-secondary)', marginTop: '2px' }}>
+                  {statusLabel[book.status] || 'Not started'}
+                  {book.lastPage > 1 && ` · Page ${book.lastPage}`}
+                  {formatTime(book.readingTime) && ` · ${formatTime(book.readingTime)}`}
+                </p>
               </div>
             </div>
           ))}
@@ -120,5 +184,12 @@ const Library = () => {
     </div>
   );
 };
+
+// Show delete button on hover via CSS-in-JS parent hover
+const styleTag = document.createElement('style');
+styleTag.textContent = `
+  #library div:hover > div > .book-delete-btn { opacity: 0.6 !important; }
+`;
+document.head.appendChild(styleTag);
 
 export default Library;
