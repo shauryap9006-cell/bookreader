@@ -65,6 +65,12 @@ const useStore = create((set, get) => ({
     set((state) => ({
       dictionaryCache: { ...state.dictionaryCache, [word]: meaning },
     })),
+
+  summaryCache: {},
+  setSummaryCache: (page, summary) =>
+    set((state) => ({
+      summaryCache: { ...state.summaryCache, [page]: summary }
+    })),
 }));
 
 export default useStore;

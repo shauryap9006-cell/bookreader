@@ -102,3 +102,15 @@ export const renderPdfPage = async (pdfDoc, pageNum, canvas, textLayerDiv, scale
     throw error;
   }
 };
+
+export const extractPageText = async (pdfDoc, pageNum) => {
+  if (!pdfDoc) return '';
+  try {
+    const page = await pdfDoc.getPage(pageNum);
+    const textContent = await page.getTextContent();
+    return textContent.items.map((item) => item.str).join(' ');
+  } catch (error) {
+    console.error(`Error extracting text from page ${pageNum}:`, error);
+    return '';
+  }
+};

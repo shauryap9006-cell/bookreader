@@ -13,9 +13,11 @@ import HighlightLayer from './HighlightLayer';
 import ResumeOverlay from './ResumeOverlay';
 import SearchOverlay from './SearchOverlay';
 import TimeIndicator from './TimeIndicator';
+import AiExplainPopup from './AiExplainPopup';
+import AiSummaryOverlay from './AiSummaryOverlay';
 
 const POPUP_MARGIN = 16;
-const POPUP_GAP = 12;
+const POPUP_GAP = 4;
 const DICTIONARY_POPUP_WIDTH = 220;
 const NOTE_POPUP_WIDTH = 220;
 const NOTE_INPUT_WIDTH = 180;
@@ -159,7 +161,7 @@ const getPopupPosition = (anchorRect, popupWidth) => {
     window.innerWidth - popupWidth - POPUP_MARGIN,
   );
 
-  let y = anchorRect.top - POPUP_GAP - 8;
+  let y = anchorRect.top - POPUP_GAP;
   if (y < POPUP_MARGIN) {
     y = anchorRect.bottom + POPUP_GAP;
   }
@@ -1019,15 +1021,52 @@ const Reader = () => {
               />
             ))}
           </div>
-          <div className="reader-selection-actions" style={{ marginTop: 0 }}>
+          <div className="reader-selection-actions" style={{ marginTop: 0, display: 'flex', gap: '8px' }}>
             <button
               onMouseDown={(event) => event.preventDefault()}
               onClick={() => handleCreateHighlight('white', true)}
             >
               Add note
             </button>
+            <button
+              onMouseDown={(event) => event.preventDefault()}
+              onClick={() => {
+                if (selectionMenu.text && selectionMenu.text.length > 3) {
+                  useStore.getState().setActivePopup({
+                    type: 'ai-explain',
+                    x: selectionMenu.x,
+                    y: selectionMenu.y,
+                    text: selectionMenu.text
+                  });
+                  setSelectionMenu(null);
+                  clearNativeSelection();
+                }
+              }}
+              style={{
+                background: 'linear-gradient(135deg, #a855f7 0%, #3b82f6 100%)',
+                color: 'white',
+                border: 'none',
+              }}
+            >
+              Explain
+            </button>
           </div>
         </div>
+      )}
+
+      {activePopup?.type === 'ai-explain' && (
+        <AiExplainPopup
+          x={activePopup.x}
+          y={activePopup.y}
+          text={activePopup.text}
+        />
+      )}
+
+      {activePopup?.type === 'ai-summary' && (
+        <AiSummaryOverlay
+          pdfDoc={pdfDoc}
+          page={activePopup.page}
+        />
       )}
 
       {activePopup?.type === 'highlight-action' && (

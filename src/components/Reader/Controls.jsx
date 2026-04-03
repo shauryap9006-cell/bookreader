@@ -117,8 +117,22 @@ const Controls = ({ isVisible }) => {
         </button>
       </div>
 
-      {/* Right: spacer for balance */}
-      <div style={{ minWidth: '120px' }} />
+      {/* Right: Summarize */}
+      <div style={{ minWidth: '120px', display: 'flex', justifyContent: 'flex-end' }}>
+        <button
+          className="action-link"
+          onClick={() => {
+            useStore.getState().setActivePopup({
+              type: 'ai-summary',
+              page: currentPage,
+            });
+          }}
+          title="Summarize Page"
+          style={{ fontSize: 'var(--text-xs)', padding: '4px 8px', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.1)' }}
+        >
+          Summarize
+        </button>
+      </div>
     </div>
   );
 };
