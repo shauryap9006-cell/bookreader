@@ -66,9 +66,9 @@ const Dashboard = () => {
         style={{
           position: 'absolute',
           inset: 0,
-          width: '110%',
+          width: '100%',
           height: '100%',
-          objectFit: 'contain',
+          objectFit: 'cover',
           zIndex: -10,
           pointerEvents: 'none',
         }}
