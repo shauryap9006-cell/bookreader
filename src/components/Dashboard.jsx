@@ -1,8 +1,7 @@
 import { useMemo, useRef } from 'react';
-import BorderGlow from './BorderGlow';
+
 import GradientText from './GradientText';
 import TextCursor from './TextCursor';
-import Galaxy from './Galaxy';
 import useStore from '../store/useStore';
 import { saveBookToLibrary, loadLibrary } from '../utils/storage';
 
@@ -59,23 +58,25 @@ const Dashboard = () => {
 
   return (
     <div className="fullscreen flex-center fade-in dashboard-shell" id="dashboard">
-      <div style={{ position: 'absolute', inset: 0, zIndex: 0, pointerEvents: 'none' }}>
-        <Galaxy
-          mouseInteraction={false}
-          density={1.5}
-          glowIntensity={0.35}
-          saturation={0.3}
-          hueShift={200}
-          twinkleIntensity={0.5}
-          rotationSpeed={0.04}
-          starSpeed={0.4}
-          speed={0.6}
-          transparent
-        />
-      </div>
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
+        style={{
+          position: 'absolute',
+          inset: 0,
+          width: '110%',
+          height: '100%',
+          objectFit: 'contain',
+          zIndex: -10,
+          pointerEvents: 'none',
+        }}
+        src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260314_131748_f2ca2a28-fed7-44c8-b9a9-bd9acdd5ec31.mp4"
+      />
       <div className="dashboard-cursor-layer">
         <TextCursor
-          text="♥"
+          text="♡"
           spacing={80}
           followMouseDirection
           randomFloat
@@ -87,17 +88,6 @@ const Dashboard = () => {
 
       <div className="dashboard-content">
         <div className="quote-glow">
-          <BorderGlow
-            edgeSensitivity={30}
-            glowColor="40 80 80"
-            backgroundColor="#000000"
-            borderRadius={28}
-            glowRadius={40}
-            glowIntensity={1}
-            coneSpread={25}
-            animated
-            colors={['#c084fc', '#f472b6', '#38bdf8']}
-          >
             <div className="quote-container">
               <h1 className="quote-heading">
                 <GradientText
@@ -111,7 +101,6 @@ const Dashboard = () => {
               </h1>
               <p className="quote-author">&mdash; {quote.author}</p>
             </div>
-          </BorderGlow>
         </div>
 
         <button

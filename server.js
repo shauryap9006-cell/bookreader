@@ -17,8 +17,8 @@ app.use((req, res, next) => {
 });
 
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-  baseURL: "https://api.groq.com/openai/v1",
+  apiKey: process.env.GITHUB_TOKEN,
+  baseURL: "https://models.github.ai/inference",
 });
 
 app.post('/api/explain', async (req, res) => {
@@ -30,7 +30,7 @@ app.post('/api/explain', async (req, res) => {
 
   try {
     const completion = await openai.chat.completions.create({
-      model: 'groq/compound',
+      model: 'microsoft/Phi-4-reasoning',
       messages: [
         {
           role: 'system',
@@ -59,7 +59,7 @@ app.post('/api/summarize', async (req, res) => {
 
   try {
     const completion = await openai.chat.completions.create({
-      model: 'groq/compound',
+      model: 'microsoft/Phi-4-reasoning',
       messages: [
         {
           role: 'system',

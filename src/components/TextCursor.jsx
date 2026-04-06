@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import './TextCursor.css';
 
 const TextCursor = ({
-  text = '♥',
+  text = '♡',
   spacing = 100,
   followMouseDirection = true,
   randomFloat = true,

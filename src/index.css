@@ -17,13 +17,13 @@
 
   --reader-highlight: rgba(255, 255, 255, 0.15);
   --reader-highlight-active: rgba(255, 255, 255, 0.25);
-  
+
   --color-yellow: rgba(255, 235, 59, 0.25);
   --color-green: rgba(76, 175, 80, 0.25);
   --color-blue: rgba(33, 150, 243, 0.25);
   --color-pink: rgba(233, 30, 99, 0.25);
   --color-white: rgba(255, 255, 255, 0.15);
-  
+
   --color-yellow-active: rgba(255, 235, 59, 0.4);
   --color-green-active: rgba(76, 175, 80, 0.4);
   --color-blue-active: rgba(33, 150, 243, 0.4);
@@ -57,13 +57,16 @@
 }
 
 /* ── Reset ── */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
-html, body {
+html,
+body {
   height: 100%;
   overflow: hidden;
 }
@@ -84,14 +87,21 @@ body {
 }
 
 /* ── Scrollbar: invisible ── */
-::-webkit-scrollbar { width: 0; height: 0; }
-* { scrollbar-width: none; }
+::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+* {
+  scrollbar-width: none;
+}
 
 /* ── Selection ── */
 ::selection {
   background: rgba(168, 206, 255, 0.35);
   text-shadow: none;
 }
+
 ::-moz-selection {
   background: rgba(168, 206, 255, 0.35);
   text-shadow: none;
@@ -143,6 +153,7 @@ button {
   justify-content: center;
   gap: var(--space-3);
   padding: var(--space-4);
+  margin-top: -100px;
 }
 
 /* ── Fade entrance ── */
@@ -151,8 +162,15 @@ button {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(3px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(3px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* ── Action link ── */
@@ -176,7 +194,7 @@ button {
 
 .quote-glow {
   width: min(100%, 780px);
-  margin: 0 auto var(--space-5);
+  margin: 0 auto var(--space-9);
 }
 
 .quote-glow .border-glow-inner {
@@ -249,8 +267,8 @@ button {
   opacity: 1;
   line-height: 1;
   -webkit-text-size-adjust: none;
-     -moz-text-size-adjust: none;
-          text-size-adjust: none;
+  -moz-text-size-adjust: none;
+  text-size-adjust: none;
   forced-color-adjust: none;
   transform-origin: 0 0;
   caret-color: CanvasText;
@@ -281,20 +299,34 @@ button {
   border-radius: 4px;
 }
 
-.textLayer .highlight.appended { position: initial; }
-.textLayer .highlight.begin    { border-radius: 4px 0 0 4px; }
-.textLayer .highlight.end      { border-radius: 0 4px 4px 0; }
-.textLayer .highlight.middle   { border-radius: 0; }
-.textLayer .highlight.selected { background-color: rgba(0, 100, 0, 0.2); }
+.textLayer .highlight.appended {
+  position: initial;
+}
 
-.textLayer > :not(.markedContent),
-.textLayer .markedContent > :not(.markedContent) {
+.textLayer .highlight.begin {
+  border-radius: 4px 0 0 4px;
+}
+
+.textLayer .highlight.end {
+  border-radius: 0 4px 4px 0;
+}
+
+.textLayer .highlight.middle {
+  border-radius: 0;
+}
+
+.textLayer .highlight.selected {
+  background-color: rgba(0, 100, 0, 0.2);
+}
+
+.textLayer> :not(.markedContent),
+.textLayer .markedContent> :not(.markedContent) {
   font-size: calc(var(--font-height) * max(1, var(--min-font-size, 0) / var(--font-height)));
   line-height: calc(var(--font-height) * max(1, var(--min-font-size, 0) / var(--font-height)));
 }
 
-.textLayer > :not(.markedContent):has(+ br),
-.textLayer .markedContent > :not(.markedContent):has(+ br) {
+.textLayer> :not(.markedContent):has(+ br),
+.textLayer .markedContent> :not(.markedContent):has(+ br) {
   min-width: 100%;
 }
 
@@ -314,6 +346,7 @@ button {
   background: rgba(168, 206, 255, 0.35);
   color: transparent;
 }
+
 .textLayer ::-moz-selection {
   background: rgba(168, 206, 255, 0.35);
   color: transparent;
@@ -495,16 +528,32 @@ button {
   transition: transform var(--duration) var(--ease), border-color var(--duration) var(--ease);
 }
 
-.color-swatch:hover, .color-swatch.active {
+.color-swatch:hover,
+.color-swatch.active {
   transform: scale(1.15);
   border-color: rgba(255, 255, 255, 0.8);
 }
 
-.swatch-yellow { background-color: rgb(255, 235, 59); }
-.swatch-green { background-color: rgb(76, 175, 80); }
-.swatch-blue { background-color: rgb(33, 150, 243); }
-.swatch-pink { background-color: rgb(233, 30, 99); }
-.swatch-white { background-color: rgb(220, 220, 220); border: 1px solid rgba(255, 255, 255, 0.1); }
+.swatch-yellow {
+  background-color: rgb(255, 235, 59);
+}
+
+.swatch-green {
+  background-color: rgb(76, 175, 80);
+}
+
+.swatch-blue {
+  background-color: rgb(33, 150, 243);
+}
+
+.swatch-pink {
+  background-color: rgb(233, 30, 99);
+}
+
+.swatch-white {
+  background-color: rgb(220, 220, 220);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
 
 /* ================================================================
    DARK MODE VARIANTS  (applied to body)

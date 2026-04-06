@@ -442,9 +442,9 @@ const Reader = () => {
         ...highlight,
         note: content
           ? {
-              content,
-              createdAt: highlight.note?.createdAt || Date.now(),
-            }
+            content,
+            createdAt: highlight.note?.createdAt || Date.now(),
+          }
           : null,
       };
     });
