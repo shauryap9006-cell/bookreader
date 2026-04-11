@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
+import { Sparkles, X, Loader2 } from 'lucide-react';
 import useStore from '../../store/useStore';
 import { extractPageText } from '../../utils/pdfLoader';
 
@@ -55,60 +57,109 @@ const AiSummaryOverlay = ({ pdfDoc, page }) => {
   }, [page, pdfDoc, setSummaryCache, summaryCache]);
 
   const popupStyle = {
-    width: '350px',
-    minWidth: '350px',
     position: 'fixed',
-    top: '16px',
-    right: '16px',
-    height: 'auto',           // ← shrinks to content, no full height
-    maxHeight: '60vh',        // ← caps it if content gets long
+    top: '24px',
+    right: '24px',
+    width: '400px',
+    maxHeight: 'calc(100vh - 48px)',
     overflowY: 'auto',
-    backgroundColor: '#5b5050ee',
-    backdropFilter: 'blur(12px)',
-    WebkitBackdropFilter: 'blur(12px)',
-    color: '#e1c4c4ff',
-    padding: '20px',
-    border: '1px solid rgba(225, 196, 196, 0.15)',
+    backgroundColor: 'rgba(15, 15, 20, 0.75)',
+    backgroundImage: 'linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 100%)',
+    color: '#EDEDED',
+    padding: '24px',
     borderRadius: '16px',
-    boxSizing: 'border-box',
+    boxShadow: '0 24px 48px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.1)',
+    border: '1px solid rgba(255, 255, 255, 0.08)',
     zIndex: 1000,
-    fontSize: '14px',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '0px',
-    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.35), 0 2px 8px rgba(0, 0, 0, 0.2)',
+    fontFamily: '"Inter", "Outfit", system-ui, -apple-system, sans-serif',
+    backdropFilter: 'blur(24px)',
+    WebkitBackdropFilter: 'blur(24px)',
   };
 
   const bullets = summaryCache[page];
 
   return (
-    <div style={popupStyle} className="ai-summary-overlay">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <strong>Page Summary</strong>
+    <motion.div 
+      style={popupStyle} 
+      initial={{ opacity: 0, x: 20, scale: 0.95 }}
+      animate={{ opacity: 1, x: 0, scale: 1 }}
+      transition={{ type: "spring", stiffness: 350, damping: 25 }}
+      className="ai-summary-overlay"
+    >
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#A5B4FC' }}>
+          <Sparkles size={16} strokeWidth={2.5} />
+          <strong style={{ fontSize: '12px', letterSpacing: '0.08em', textTransform: 'uppercase', fontWeight: '700' }}>
+            Page Summary
+          </strong>
+        </div>
         <button
           onClick={clearActivePopup}
-          className="action-link"
-          style={{ fontSize: '12px', opacity: 0.6 }}
+          style={{ 
+            background: 'transparent', 
+            border: 'none', 
+            color: '#888', 
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '6px',
+            borderRadius: '50%',
+            transition: 'all 0.2s ease'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.color = '#fff';
+            e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.1)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.color = '#888';
+            e.currentTarget.style.backgroundColor = 'transparent';
+          }}
         >
-          ✕
+          <X size={16} />
         </button>
       </div>
 
-      <div style={{ marginTop: '0px', lineHeight: '1.2' }}>
-        {loading && <div style={{ fontSize: '13px', opacity: 0.7 }}>Generating summary...</div>}
-        {error && <div style={{ color: '#ff6b6b' }}>Failed to generate. Ensure server is running.</div>}
-        {bullets && bullets.length > 0 && (
-          <ul style={{ margin: 0, paddingLeft: '20px', display: 'flex', flexDirection: 'column', gap: '0px' }}>
-            {bullets.map((point, index) => (
-              <li key={index} style={{ marginBottom: '2px' }}>{point}</li>
-            ))}
-          </ul>
+      <div style={{ fontSize: '15px', lineHeight: '1.65', letterSpacing: '0.01em', fontWeight: '400', color: '#E4E4E7' }}>
+        {loading && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', opacity: 0.8, padding: '8px 0' }}>
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ repeat: Infinity, duration: 1.5, ease: "linear" }}
+            >
+              <Loader2 size={18} color="#A5B4FC" />
+            </motion.div>
+            <span style={{ fontSize: '14px', color: '#A1A1AA' }}>Reading page content...</span>
+          </div>
         )}
+        {error && <div style={{ color: '#FCA5A5' }}>Failed to generate. Ensure server is running.</div>}
+        
+        {bullets && bullets.length > 0 && (
+          <motion.ul 
+            initial={{ opacity: 0, y: 5 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+            style={{ margin: 0, paddingLeft: '24px', display: 'flex', flexDirection: 'column', gap: '10px' }}
+          >
+            {bullets.map((point, index) => (
+              <motion.li 
+                key={index} 
+                initial={{ opacity: 0, x: -5 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.1, duration: 0.3 }}
+                style={{ paddingLeft: '4px', color: '#F4F4F5' }}
+              >
+                {point}
+              </motion.li>
+            ))}
+          </motion.ul>
+        )}
+        
         {!loading && !error && bullets?.length === 0 && (
-          <div style={{ opacity: 0.7 }}>No summary available.</div>
+          <div style={{ color: '#A1A1AA', fontStyle: 'italic' }}>No summary available for this page.</div>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 };
 

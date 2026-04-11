@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import useStore from '../store/useStore';
 import { loadBookFile, deleteBookFromLibrary } from '../utils/storage';
+import { ShaderAnimation } from './ui/shader-lines';
 
 /**
  * LIBRARY — Grid of books with minimal metadata.
@@ -52,135 +53,161 @@ const Library = () => {
   };
 
   return (
-    <div className="fullscreen fade-in" id="library" style={{ display: 'flex', flexDirection: 'column', padding: 'var(--space-6)' }}>
+    <div className="fullscreen fade-in" id="library" style={{ position: 'relative', overflow: 'hidden' }}>
 
-      {/* Header */}
-      <header style={{ display: 'flex', alignItems: 'center', marginBottom: 'var(--space-6)' }}>
-        <button className="action-link" id="library-back-btn" onClick={() => setCurrentView('dashboard')}>
-          &larr; Back
-        </button>
-        <div style={{ flex: 1 }} />
-        <h2 style={{ fontSize: 'var(--text-xl)', fontWeight: 300, letterSpacing: '0.04em', textTransform: 'lowercase' }}>
-          library
-        </h2>
-      </header>
+      {/* ── Shader background ── */}
+      <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
+        <ShaderAnimation />
+        {/* Dim overlay so content stays readable */}
+        <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.25)' }} />
+      </div>
 
-      {/* Empty state */}
-      {library.length === 0 ? (
-        <div className="flex-center" style={{ flex: 1, flexDirection: 'column', gap: 'var(--space-3)' }}>
-          <p style={{ color: 'var(--fg-secondary)', fontSize: 'var(--text-sm)' }}>No books yet</p>
-          <button className="action-link" onClick={() => setCurrentView('dashboard')}>
-            Upload your first book &rarr;
+      {/* ── Content layer ── */}
+      <div style={{
+        position: 'relative',
+        zIndex: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        padding: 'var(--space-6)',
+        height: '100%',
+      }}>
+
+        {/* Header */}
+        <header style={{ display: 'flex', alignItems: 'center', marginBottom: 'var(--space-6)' }}>
+          <button className="action-link" id="library-back-btn" onClick={() => setCurrentView('dashboard')}>
+            &larr; Back
           </button>
-        </div>
-      ) : (
+          <div style={{ flex: 1 }} />
+          <h2 style={{ fontSize: 'var(--text-xl)', fontWeight: 300, letterSpacing: '0.04em', textTransform: 'lowercase' }}>
+            library
+          </h2>
+        </header>
 
-        /* Book Grid */
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
-            gap: 'var(--space-5)',
-            flex: 1,
-            overflow: 'auto',
-            alignContent: 'start',
-          }}
-        >
-          {library.map((book) => (
-            <div
-              key={book.id}
-              onClick={() => openBook(book)}
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 'var(--space-2)',
-                cursor: 'pointer',
-                opacity: loading === book.id ? 0.4 : 1,
-                transition: 'opacity var(--duration) var(--ease)',
-              }}
-            >
-              {/* Cover placeholder */}
+        {/* Empty state */}
+        {library.length === 0 ? (
+          <div className="flex-center" style={{ flex: 1, flexDirection: 'column', gap: 'var(--space-3)' }}>
+            <p style={{ color: 'var(--fg-secondary)', fontSize: 'var(--text-sm)' }}>No books yet</p>
+            <button className="action-link" onClick={() => setCurrentView('dashboard')}>
+              Upload your first book &rarr;
+            </button>
+          </div>
+        ) : (
+
+          /* Book Grid */
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
+              gap: 'var(--space-5)',
+              flex: 1,
+              overflow: 'auto',
+              alignContent: 'start',
+            }}
+          >
+            {library.map((book) => (
               <div
+                key={book.id}
+                onClick={() => openBook(book)}
                 style={{
-                  aspectRatio: '1 / 1.45',
-                  background: '#0a0a0a',
                   display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  position: 'relative',
-                  overflow: 'hidden',
-                  transition: 'background var(--duration) var(--ease)',
+                  flexDirection: 'column',
+                  gap: 'var(--space-2)',
+                  cursor: 'pointer',
+                  opacity: loading === book.id ? 0.4 : 1,
+                  transition: 'opacity var(--duration) var(--ease)',
                 }}
-                onMouseEnter={(e) => { e.currentTarget.style.background = '#111'; }}
-                onMouseLeave={(e) => { e.currentTarget.style.background = '#0a0a0a'; }}
               >
-                {/* Minimal book icon — just two lines */}
-                <svg width="28" height="36" viewBox="0 0 28 36" fill="none" style={{ opacity: 0.15 }}>
-                  <rect x="2" y="2" width="24" height="32" rx="1" stroke="white" strokeWidth="1"/>
-                  <line x1="8" y1="10" x2="20" y2="10" stroke="white" strokeWidth="0.5"/>
-                  <line x1="8" y1="14" x2="16" y2="14" stroke="white" strokeWidth="0.5"/>
-                </svg>
-
-                {/* Delete */}
-                <button
-                  onClick={(e) => deleteBook(e, book.id)}
+                {/* Cover placeholder */}
+                <div
                   style={{
-                    position: 'absolute',
-                    top: 'var(--space-2)',
-                    right: 'var(--space-2)',
-                    color: 'var(--fg-secondary)',
-                    opacity: 0,
-                    transition: 'opacity var(--duration) var(--ease), color var(--duration) var(--ease)',
-                    fontSize: 'var(--text-xs)',
+                    aspectRatio: '1 / 1.45',
+                    background: 'rgba(0,0,0,0.6)',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    position: 'relative',
+                    overflow: 'hidden',
+                    borderRadius: '6px',
+                    border: '1px solid rgba(255,255,255,0.06)',
+                    transition: 'border-color var(--duration) var(--ease), background var(--duration) var(--ease)',
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.color = '#fff';
-                    e.currentTarget.style.opacity = '1';
+                    e.currentTarget.style.background = 'rgba(20,20,20,0.7)';
+                    e.currentTarget.style.borderColor = 'rgba(255,255,255,0.15)';
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.color = 'var(--fg-secondary)';
+                    e.currentTarget.style.background = 'rgba(0,0,0,0.6)';
+                    e.currentTarget.style.borderColor = 'rgba(255,255,255,0.06)';
                   }}
-                  className="book-delete-btn"
                 >
-                  ×
-                </button>
+                  {/* Minimal book icon */}
+                  <svg width="28" height="36" viewBox="0 0 28 36" fill="none" style={{ opacity: 0.15 }}>
+                    <rect x="2" y="2" width="24" height="32" rx="1" stroke="white" strokeWidth="1" />
+                    <line x1="8" y1="10" x2="20" y2="10" stroke="white" strokeWidth="0.5" />
+                    <line x1="8" y1="14" x2="16" y2="14" stroke="white" strokeWidth="0.5" />
+                  </svg>
 
-                {/* Reading status indicator */}
-                {book.status === 'reading' && (
-                  <div style={{
-                    position: 'absolute',
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    height: '2px',
-                    background: 'var(--fg)',
-                    opacity: 0.3,
-                    width: book.totalPages ? `${((book.lastPage || 1) / book.totalPages) * 100}%` : '0%',
-                  }} />
-                )}
-              </div>
+                  {/* Delete */}
+                  <button
+                    onClick={(e) => deleteBook(e, book.id)}
+                    style={{
+                      position: 'absolute',
+                      top: 'var(--space-2)',
+                      right: 'var(--space-2)',
+                      color: 'var(--fg-secondary)',
+                      opacity: 0,
+                      transition: 'opacity var(--duration) var(--ease), color var(--duration) var(--ease)',
+                      fontSize: 'var(--text-xs)',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.color = '#fff';
+                      e.currentTarget.style.opacity = '1';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.color = 'var(--fg-secondary)';
+                    }}
+                    className="book-delete-btn"
+                  >
+                    ×
+                  </button>
 
-              {/* Title & meta */}
-              <div>
-                <p style={{
-                  fontSize: 'var(--text-sm)',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  whiteSpace: 'nowrap',
-                  fontWeight: 400,
-                }}>
-                  {book.title}
-                </p>
-                <p style={{ fontSize: 'var(--text-xs)', color: 'var(--fg-secondary)', marginTop: '2px' }}>
-                  {statusLabel[book.status] || 'Not started'}
-                  {book.lastPage > 1 && ` · Page ${book.lastPage}`}
-                  {formatTime(book.readingTime) && ` · ${formatTime(book.readingTime)}`}
-                </p>
+                  {/* Reading status indicator */}
+                  {book.status === 'reading' && (
+                    <div style={{
+                      position: 'absolute',
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      height: '2px',
+                      background: 'var(--fg)',
+                      opacity: 0.3,
+                      width: book.totalPages ? `${((book.lastPage || 1) / book.totalPages) * 100}%` : '0%',
+                    }} />
+                  )}
+                </div>
+
+                {/* Title & meta */}
+                <div>
+                  <p style={{
+                    fontSize: 'var(--text-sm)',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                    fontWeight: 400,
+                  }}>
+                    {book.title}
+                  </p>
+                  <p style={{ fontSize: 'var(--text-xs)', color: 'var(--fg-secondary)', marginTop: '2px' }}>
+                    {statusLabel[book.status] || 'Not started'}
+                    {book.lastPage > 1 && ` · Page ${book.lastPage}`}
+                    {formatTime(book.readingTime) && ` · ${formatTime(book.readingTime)}`}
+                  </p>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

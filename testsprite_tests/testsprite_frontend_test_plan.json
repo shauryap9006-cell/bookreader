@@ -1,0 +1,421 @@
+[
+  {
+    "id": "TC001",
+    "title": "Save and resume last-read page after reopening the same book",
+    "description": "Verifies page navigation updates the saved reading position and reopening the same book resumes to the last-read page.",
+    "category": "Reader Interface",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /"
+      },
+      {
+        "type": "action",
+        "description": "Click the control to upload a book"
+      },
+      {
+        "type": "action",
+        "description": "Select a valid .pdf file in the native file picker"
+      },
+      {
+        "type": "action",
+        "description": "Click the control to open the Library view"
+      },
+      {
+        "type": "action",
+        "description": "Click the uploaded book to open it for reading"
+      },
+      {
+        "type": "action",
+        "description": "Advance to the next page"
+      },
+      {
+        "type": "action",
+        "description": "Advance to the next page"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /"
+      },
+      {
+        "type": "action",
+        "description": "Click the control to open the Library view"
+      },
+      {
+        "type": "action",
+        "description": "Click the same book to open it for reading"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the reader opens on a later page rather than the first page"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC002",
+    "title": "Upload a valid PDF and add it to the library",
+    "description": "Verifies a first-time user can upload a valid .pdf from the dashboard and receives confirmation that it was added to the local library.",
+    "category": "Dashboard Experience",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /"
+      },
+      {
+        "type": "action",
+        "description": "Click the control to upload a book"
+      },
+      {
+        "type": "action",
+        "description": "Select a valid .pdf file in the native file picker"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify an upload success confirmation is visible"
+      },
+      {
+        "type": "action",
+        "description": "Click the control to open the Library view"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the newly uploaded book is listed in the library"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC003",
+    "title": "Open a book from the library into the reader",
+    "description": "Verifies a user can upload a PDF, open the library list, select the book, and see it loaded in the reader interface.",
+    "category": "Library Management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /"
+      },
+      {
+        "type": "action",
+        "description": "Click the control to upload a book"
+      },
+      {
+        "type": "action",
+        "description": "Select a valid .pdf file in the native file picker"
+      },
+      {
+        "type": "action",
+        "description": "Click the control to open the Library view"
+      },
+      {
+        "type": "action",
+        "description": "Click the newly uploaded book to open it for reading"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the reader interface is displayed with PDF content rendered"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC004",
+    "title": "Persist last-read page across a browser refresh mid-read",
+    "description": "Verifies refreshing the app while reading does not lose the saved page position and reopening the book resumes correctly.",
+    "category": "Reader Interface",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /"
+      },
+      {
+        "type": "action",
+        "description": "Click the control to upload a book"
+      },
+      {
+        "type": "action",
+        "description": "Select a valid .pdf file in the native file picker"
+      },
+      {
+        "type": "action",
+        "description": "Click the control to open the Library view"
+      },
+      {
+        "type": "action",
+        "description": "Click the uploaded book to open it for reading"
+      },
+      {
+        "type": "action",
+        "description": "Advance to the next page"
+      },
+      {
+        "type": "action",
+        "description": "Advance to the next page"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /"
+      },
+      {
+        "type": "action",
+        "description": "Click the control to open the Library view"
+      },
+      {
+        "type": "action",
+        "description": "Click the same book to open it for reading"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the reader opens on the previously reached page rather than resetting to the first page"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC005",
+    "title": "Persist library across app reload and reopen book",
+    "description": "Verifies a previously uploaded book remains in the library after a page reload and can be opened again from the library.",
+    "category": "Library Management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /"
+      },
+      {
+        "type": "action",
+        "description": "Click the control to upload a book"
+      },
+      {
+        "type": "action",
+        "description": "Select a valid .pdf file in the native file picker"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /"
+      },
+      {
+        "type": "action",
+        "description": "Click the control to open the Library view"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the previously uploaded book is listed in the library"
+      },
+      {
+        "type": "action",
+        "description": "Click the listed book to open it for reading"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the reader interface is displayed with PDF content rendered"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC006",
+    "title": "Reject non-PDF upload with validation feedback",
+    "description": "Verifies uploading a non-.pdf from the dashboard is prevented and a clear validation message is shown without adding a book to the library.",
+    "category": "Dashboard Experience",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /"
+      },
+      {
+        "type": "action",
+        "description": "Click the control to upload a book"
+      },
+      {
+        "type": "action",
+        "description": "Select a non-.pdf file in the native file picker"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a file-type validation message is visible"
+      },
+      {
+        "type": "action",
+        "description": "Click the control to open the Library view"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the library does not show a newly added book from this upload attempt"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC007",
+    "title": "Intercept Ctrl+F to search within the PDF and highlight matches",
+    "description": "Verifies Ctrl+F opens the in-reader search UI, a term can be searched, and matches are highlighted within the rendered PDF.",
+    "category": "Reader Interface",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /"
+      },
+      {
+        "type": "action",
+        "description": "Click the control to upload a book"
+      },
+      {
+        "type": "action",
+        "description": "Select a valid .pdf file in the native file picker"
+      },
+      {
+        "type": "action",
+        "description": "Click the control to open the Library view"
+      },
+      {
+        "type": "action",
+        "description": "Click the uploaded book to open it for reading"
+      },
+      {
+        "type": "action",
+        "description": "Press Ctrl+F"
+      },
+      {
+        "type": "action",
+        "description": "Fill a common search term into the in-document search field"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify search matches are highlighted within the PDF"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC008",
+    "title": "Open the library from the dashboard and view stored books",
+    "description": "Verifies the user can navigate from the dashboard to the library and see books loaded from browser storage.",
+    "category": "Dashboard Experience",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /"
+      },
+      {
+        "type": "action",
+        "description": "Click the control to open the Library view"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the library list is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the library view shows either saved books or an empty state"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC009",
+    "title": "Show no-results feedback for in-document search",
+    "description": "Verifies searching for a term with no matches shows a clear no-results message in the reader search experience.",
+    "category": "Reader Interface",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /"
+      },
+      {
+        "type": "action",
+        "description": "Click the control to upload a book"
+      },
+      {
+        "type": "action",
+        "description": "Select a valid .pdf file in the native file picker"
+      },
+      {
+        "type": "action",
+        "description": "Click the control to open the Library view"
+      },
+      {
+        "type": "action",
+        "description": "Click the uploaded book to open it for reading"
+      },
+      {
+        "type": "action",
+        "description": "Press Ctrl+F"
+      },
+      {
+        "type": "action",
+        "description": "Fill a highly unlikely search term into the in-document search field"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a no-results message is visible"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC010",
+    "title": "Display multiple uploaded books in the library",
+    "description": "Verifies uploading multiple PDFs results in multiple entries shown in the library list so the user can choose among them.",
+    "category": "Library Management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /"
+      },
+      {
+        "type": "action",
+        "description": "Click the control to upload a book"
+      },
+      {
+        "type": "action",
+        "description": "Select a valid .pdf file in the native file picker"
+      },
+      {
+        "type": "action",
+        "description": "Click the control to upload a book"
+      },
+      {
+        "type": "action",
+        "description": "Select another valid .pdf file in the native file picker"
+      },
+      {
+        "type": "action",
+        "description": "Click the control to open the Library view"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify multiple books are listed in the library"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC011",
+    "title": "Dashboard visual experience does not block primary actions",
+    "description": "Verifies the immersive dashboard elements load while the user can still access upload and library actions.",
+    "category": "Dashboard Experience",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify an immersive background experience is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a rotating or randomized quote is displayed"
+      },
+      {
+        "type": "action",
+        "description": "Click the control to open the Library view"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the library view is displayed"
+      }
+    ],
+    "priority": "Medium"
+  }
+]

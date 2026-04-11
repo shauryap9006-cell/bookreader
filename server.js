@@ -2,7 +2,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import OpenAI from 'openai';
+import Groq from 'groq-sdk';
 
 dotenv.config();
 
@@ -16,9 +16,8 @@ app.use((req, res, next) => {
   next();
 });
 
-const openai = new OpenAI({
-  apiKey: process.env.GITHUB_TOKEN,
-  baseURL: "https://models.github.ai/inference",
+const groq = new Groq({
+  apiKey: process.env.GROQ_API_KEY,
 });
 
 app.post('/api/explain', async (req, res) => {
@@ -29,8 +28,8 @@ app.post('/api/explain', async (req, res) => {
   }
 
   try {
-    const completion = await openai.chat.completions.create({
-      model: 'microsoft/Phi-4-reasoning',
+    const completion = await groq.chat.completions.create({
+      model: 'llama-3.3-70b-versatile',
       messages: [
         {
           role: 'system',
@@ -58,16 +57,16 @@ app.post('/api/summarize', async (req, res) => {
   }
 
   try {
-    const completion = await openai.chat.completions.create({
-      model: 'microsoft/Phi-4-reasoning',
+    const completion = await groq.chat.completions.create({
+      model: 'llama-3.3-70b-versatile',
       messages: [
         {
           role: 'system',
-          content: 'You are a concise summarizer. Read the following text and return exactly 3 to 5 concise bullet points summarizing the content clearly and simply. Do not include any headers, extra prose, or introductory/concluding remarks. Just the bullet points starting with a dash or bullet character.',
+          content: 'You are an expert summarizer. Read the following text and provide a comprehensive, high-quality summary. Extract the primary topic, key arguments, and essential details. Format your response strictly as a list of distinct bullet points. Start each point with a dash. Do not include any headers, conversational filler, or introductory/concluding remarks.',
         },
         { role: 'user', content: text },
       ],
-      max_tokens: 300,
+      max_tokens: 1000,
       temperature: 0.3,
     });
 
@@ -78,8 +77,7 @@ app.post('/api/summarize', async (req, res) => {
     const bulletPoints = summary
       .split('\n')
       .map((line) => line.trim().replace(/^[-*•]\s*/, ''))
-      .filter((line) => line.length > 0)
-      .slice(0, 5);
+      .filter((line) => line.length > 0);
 
     res.json({ bulletPoints });
   } catch (error) {
