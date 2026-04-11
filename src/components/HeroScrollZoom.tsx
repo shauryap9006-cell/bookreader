@@ -10,6 +10,7 @@ import Lenis from 'lenis';
 import { WebGLShader } from '@/components/ui/web-gl-shader';
 
 type HeroScrollZoomProps = {
+  backgroundWord?: string;
   badge?: string;
   body: string;
   eyebrow?: string;
@@ -56,6 +57,7 @@ function useSmoothScroll(
 }
 
 export default function HeroScrollZoom({
+  backgroundWord,
   badge = 'Now available',
   body,
   eyebrow,
@@ -85,18 +87,16 @@ export default function HeroScrollZoom({
     restDelta: 0.0005,
   });
 
-  const scale = useTransform(smooth, [0, 1], [0.3, 1]);
-  const mediaScale = useTransform(
-    smooth,
-    [0, 0.18, 0.42, 0.7, 1],
-    [1.08, 1.03, 1.06, 1.01, 1.04],
-  );
-  const radius = useTransform(smooth, [0, 0.9], [24, 0]);
+  const scale = useTransform(smooth, [0, 0.35, 1], [0.34, 0.34, 1]);
+  const mediaY = useTransform(smooth, [0, 0.35, 1], [180, 0, 0]);
+  const radius = useTransform(smooth, [0, 0.35, 1], [24, 24, 0]);
   const overlayOpacity = useTransform(smooth, [0, 0.6, 1], [0, 0.15, 0.52]);
+  const backdropWordOpacity = useTransform(smooth, [0, 0.18, 0.42, 0.62], [0.8, 0.72, 0.4, 0]);
+  const backdropWordY = useTransform(smooth, [0, 0.6], [-68, -96]);
+  const backdropWordScale = useTransform(smooth, [0, 0.6], [1, 1.08]);
   const textOpacity = useTransform(smooth, [0.68, 1], [0, 1]);
   const textY = useTransform(smooth, [0.68, 1], [36, 0]);
   const badgeOpacity = useTransform(smooth, [0, 0.3], [1, 0]);
-  const hintOpacity = useTransform(smooth, [0, 0.15], [1, 0]);
 
   return (
     <>
@@ -192,32 +192,68 @@ export default function HeroScrollZoom({
                 style={{
                   position: 'absolute',
                   inset: 0,
-                  opacity: 0.12,
+                  opacity: 0.50,
                 }}
               >
                 <WebGLShader />
               </div>
             </div>
 
+            {backgroundWord ? (
+              <motion.div
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  paddingTop: 0,
+                  opacity: prefersReducedMotion ? 0.3 : backdropWordOpacity,
+                  y: prefersReducedMotion ? -68 : backdropWordY,
+                  scale: prefersReducedMotion ? 1 : backdropWordScale,
+                  pointerEvents: 'none',
+                  zIndex: 0,
+                }}
+              >
+                <span
+                  style={{
+                    fontFamily: "'DM Sans', sans-serif",
+                    fontSize: 'clamp(88px, 19vw, 260px)',
+                    fontWeight: 500,
+                    letterSpacing: '0.22em',
+                    paddingLeft: '0.22em',
+                    lineHeight: 0.9,
+                    textTransform: 'uppercase',
+                    color: 'rgba(255,255,255,0.08)',
+                    textShadow: '0 0 36px rgba(255,255,255,0.08)',
+                    whiteSpace: 'nowrap',
+                    userSelect: 'none',
+                  }}
+                >
+                  {backgroundWord}
+                </span>
+              </motion.div>
+            ) : null}
+
             <motion.div
               style={{
                 position: 'absolute',
                 inset: 0,
                 scale: prefersReducedMotion ? 1 : scale,
+                y: prefersReducedMotion ? 0 : mediaY,
                 borderRadius: prefersReducedMotion ? 0 : radius,
                 overflow: 'hidden',
                 transformOrigin: 'center center',
                 pointerEvents: 'none',
                 zIndex: 1,
+                willChange: 'transform',
               }}
             >
               <div
                 style={{
                   width: '100%',
                   height: '100%',
-                  scale: prefersReducedMotion ? 1 : mediaScale,
                   transformOrigin: 'center center',
-                  willChange: 'transform',
                 }}
               >
                 <video
@@ -370,41 +406,6 @@ export default function HeroScrollZoom({
               </div>
             </motion.div>
 
-            <motion.div
-              style={{
-                position: 'absolute',
-                bottom: 28,
-                left: '50%',
-                x: '-50%',
-                opacity: prefersReducedMotion ? 0 : hintOpacity,
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                gap: 6,
-                pointerEvents: 'none',
-                zIndex: 20,
-              }}
-            >
-              <span
-                style={{
-                  fontFamily: "'DM Sans', sans-serif",
-                  fontSize: 11,
-                  color: 'rgba(255,255,255,0.4)',
-                  letterSpacing: '0.1em',
-                }}
-              >
-                scroll
-              </span>
-              <motion.div
-                animate={prefersReducedMotion ? undefined : { y: [0, 6, 0] }}
-                transition={
-                  prefersReducedMotion
-                    ? undefined
-                    : { repeat: Infinity, duration: 1.6, ease: 'easeInOut' }
-                }
-                style={{ width: 1, height: 28, background: 'rgba(255,255,255,0.25)' }}
-              />
-            </motion.div>
           </div>
         </div>
       </div>

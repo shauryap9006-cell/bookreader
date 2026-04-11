@@ -74,6 +74,7 @@ const Dashboard = () => {
   return (
     <>
       <HeroScrollZoom
+        backgroundWord="READER"
         badge="SCROLL TO DISCOVER"
         headline={
           <GradientText
