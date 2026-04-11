@@ -7,6 +7,7 @@ import {
   useTransform,
 } from 'motion/react';
 import Lenis from 'lenis';
+import { WebGLShader } from '@/components/ui/web-gl-shader';
 
 type HeroScrollZoomProps = {
   badge?: string;
@@ -34,7 +35,7 @@ function useSmoothScroll(
     const lenis = new Lenis({
       wrapper,
       content,
-      lerp: 0.08,
+      lerp: 0.16,
       smoothWheel: true,
     });
 
@@ -79,12 +80,17 @@ export default function HeroScrollZoom({
   });
 
   const smooth = useSpring(scrollYProgress, {
-    stiffness: 80,
-    damping: 22,
-    restDelta: 0.001,
+    stiffness: 160,
+    damping: 30,
+    restDelta: 0.0005,
   });
 
   const scale = useTransform(smooth, [0, 1], [0.3, 1]);
+  const mediaScale = useTransform(
+    smooth,
+    [0, 0.18, 0.42, 0.7, 1],
+    [1.08, 1.03, 1.06, 1.01, 1.04],
+  );
   const radius = useTransform(smooth, [0, 0.9], [24, 0]);
   const overlayOpacity = useTransform(smooth, [0, 0.6, 1], [0, 0.15, 0.52]);
   const textOpacity = useTransform(smooth, [0.68, 1], [0, 1]);
@@ -173,6 +179,26 @@ export default function HeroScrollZoom({
               overflow: 'hidden',
             }}
           >
+            <div
+              style={{
+                position: 'absolute',
+                inset: 0,
+                zIndex: 0,
+                background:
+                  'radial-gradient(circle at top, rgba(22, 39, 72, 0.28), transparent 48%), #040404',
+              }}
+            >
+              <div
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  opacity: 0.12,
+                }}
+              >
+                <WebGLShader />
+              </div>
+            </div>
+
             <motion.div
               style={{
                 position: 'absolute',
@@ -182,22 +208,34 @@ export default function HeroScrollZoom({
                 overflow: 'hidden',
                 transformOrigin: 'center center',
                 pointerEvents: 'none',
+                zIndex: 1,
               }}
             >
-              <video
-                src={videoSrc}
-                poster={posterSrc}
-                autoPlay
-                muted
-                loop
-                playsInline
+              <div
                 style={{
                   width: '100%',
                   height: '100%',
-                  objectFit: 'cover',
-                  display: 'block',
+                  scale: prefersReducedMotion ? 1 : mediaScale,
+                  transformOrigin: 'center center',
+                  willChange: 'transform',
                 }}
-              />
+              >
+                <video
+                  src={videoSrc}
+                  poster={posterSrc}
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  preload="auto"
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                    display: 'block',
+                  }}
+                />
+              </div>
 
               <motion.div
                 style={{

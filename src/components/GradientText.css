@@ -7,10 +7,12 @@
   align-items: center;
   justify-content: center;
   border-radius: 1.25rem;
-  font-weight: inherit; /* inherit from parent to keep font same */
+  font-weight: inherit;
+  /* inherit from parent to keep font same */
   backdrop-filter: blur(10px);
   transition: box-shadow 0.5s ease-out;
-  overflow: visible; /* Changed to visible to avoid clipping italic serifs */
+  overflow: visible;
+  /* Changed to visible to avoid clipping italic serifs */
   cursor: pointer;
 }
 
