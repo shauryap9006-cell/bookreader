@@ -71,6 +71,10 @@ const useStore = create((set, get) => ({
     set((state) => ({
       summaryCache: { ...state.summaryCache, [page]: summary }
     })),
+
+  isHeroZoomed: false,
+  setIsHeroZoomed: (value) => set({ isHeroZoomed: value }),
 }));
+
 
 export default useStore;

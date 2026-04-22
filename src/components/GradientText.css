@@ -9,7 +9,6 @@
   border-radius: 1.25rem;
   font-weight: inherit;
   /* inherit from parent to keep font same */
-  backdrop-filter: blur(10px);
   transition: box-shadow 0.5s ease-out;
   overflow: visible;
   /* Changed to visible to avoid clipping italic serifs */
@@ -42,7 +41,7 @@
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  background-color: #060010;
+  background-color: transparent;
   z-index: -1;
 }
 

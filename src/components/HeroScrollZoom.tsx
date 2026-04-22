@@ -5,9 +5,11 @@ import {
   useScroll,
   useSpring,
   useTransform,
+  useMotionValue,
 } from 'motion/react';
 import Lenis from 'lenis';
 import { WebGLShader } from '@/components/ui/web-gl-shader';
+import useStore from '../store/useStore';
 
 type HeroScrollZoomProps = {
   backgroundWord?: string;
@@ -72,8 +74,9 @@ export default function HeroScrollZoom({
   const scrollRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = useReducedMotion();
+  const { isHeroZoomed, setIsHeroZoomed } = useStore();
 
-  useSmoothScroll(scrollRef, containerRef, !prefersReducedMotion);
+  useSmoothScroll(scrollRef, containerRef, !prefersReducedMotion && !isHeroZoomed);
 
   const { scrollYProgress } = useScroll({
     container: scrollRef,
@@ -81,11 +84,31 @@ export default function HeroScrollZoom({
     offset: ['start start', 'end end'],
   });
 
-  const smooth = useSpring(scrollYProgress, {
-    stiffness: 160,
-    damping: 30,
-    restDelta: 0.0005,
+  const internalProgress = useMotionValue(isHeroZoomed ? 1 : 0);
+
+  useEffect(() => {
+    if (isHeroZoomed) {
+      internalProgress.set(1);
+      if (scrollRef.current) {
+        scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+      }
+    } else {
+      return scrollYProgress.onChange((v) => {
+        internalProgress.set(v);
+        if (v >= 0.998) {
+          setIsHeroZoomed(true);
+        }
+      });
+    }
+  }, [isHeroZoomed, scrollYProgress, internalProgress, setIsHeroZoomed]);
+
+  const smooth = useSpring(internalProgress, {
+    stiffness: 250,
+    damping: 18,
+    mass: 0.8,
+    restDelta: 0.0001,
   });
+
 
   const scale = useTransform(smooth, [0, 0.35, 1], [0.34, 0.34, 1]);
   const mediaY = useTransform(smooth, [0, 0.35, 1], [180, 0, 0]);
@@ -94,8 +117,14 @@ export default function HeroScrollZoom({
   const backdropWordOpacity = useTransform(smooth, [0, 0.18, 0.42, 0.62], [0.8, 0.72, 0.4, 0]);
   const backdropWordY = useTransform(smooth, [0, 0.6], [-68, -96]);
   const backdropWordScale = useTransform(smooth, [0, 0.6], [1, 1.08]);
-  const textOpacity = useTransform(smooth, [0.68, 1], [0, 1]);
-  const textY = useTransform(smooth, [0.68, 1], [36, 0]);
+  const eyebrowOpacity = useTransform(smooth, [0.65, 0.75], [0, 1]);
+  const eyebrowY = useTransform(smooth, [0.65, 0.75], [20, 0]);
+  const headlineOpacity = useTransform(smooth, [0.75, 0.85], [0, 1]);
+  const headlineY = useTransform(smooth, [0.75, 0.85], [30, 0]);
+  const bodyOpacity = useTransform(smooth, [0.85, 0.95], [0, 1]);
+  const bodyY = useTransform(smooth, [0.85, 0.95], [20, 0]);
+  const buttonOpacity = useTransform(smooth, [0.92, 1], [0, 1]);
+  const buttonScale = useTransform(smooth, [0.92, 1], [0.8, 1]);
   const badgeOpacity = useTransform(smooth, [0, 0.3], [1, 0]);
 
   return (
@@ -169,7 +198,11 @@ export default function HeroScrollZoom({
         }
       `}</style>
 
-      <div ref={scrollRef} className="hz-scroll-shell">
+      <div
+        ref={scrollRef}
+        className="hz-scroll-shell"
+        style={{ overflowY: isHeroZoomed ? 'hidden' : 'auto' }}
+      >
         <div ref={containerRef} style={{ height: '300vh', background: '#080808' }}>
           <div
             style={{
@@ -331,9 +364,7 @@ export default function HeroScrollZoom({
                 top: '40%',
                 left: '50%',
                 x: '-50%',
-                y: prefersReducedMotion ? 0 : textY,
                 translateY: '-50%',
-                opacity: prefersReducedMotion ? 1 : textOpacity,
                 textAlign: 'center',
                 zIndex: 10,
                 width: 'min(720px, calc(100vw - 24px))',
@@ -343,7 +374,7 @@ export default function HeroScrollZoom({
               }}
             >
               {eyebrow ? (
-                <p
+                <motion.p
                   style={{
                     fontFamily: "'DM Sans', sans-serif",
                     fontSize: 11,
@@ -352,13 +383,15 @@ export default function HeroScrollZoom({
                     color: 'rgba(255,255,255,0.55)',
                     textTransform: 'uppercase',
                     margin: '0 0 14px',
+                    opacity: prefersReducedMotion ? 1 : eyebrowOpacity,
+                    y: prefersReducedMotion ? 0 : eyebrowY,
                   }}
                 >
                   {eyebrow}
-                </p>
+                </motion.p>
               ) : null}
 
-              <h1
+              <motion.h1
                 style={{
                   fontFamily: "'Cormorant Garamond', serif",
                   fontSize: 'clamp(38px, 5vw, 68px)',
@@ -369,12 +402,14 @@ export default function HeroScrollZoom({
                   lineHeight: 1.12,
                   textWrap: 'balance',
                   overflow: 'visible',
+                  opacity: prefersReducedMotion ? 1 : headlineOpacity,
+                  y: prefersReducedMotion ? 0 : headlineY,
                 }}
               >
                 {headline}
-              </h1>
+              </motion.h1>
 
-              <p
+              <motion.p
                 style={{
                   fontFamily: "'DM Sans', sans-serif",
                   fontSize: 15,
@@ -383,18 +418,22 @@ export default function HeroScrollZoom({
                   margin: '0 auto 32px',
                   lineHeight: 1.7,
                   maxWidth: 380,
+                  opacity: prefersReducedMotion ? 1 : bodyOpacity,
+                  y: prefersReducedMotion ? 0 : bodyY,
                 }}
               >
                 {body}
-              </p>
+              </motion.p>
 
-              <div
+              <motion.div
                 style={{
                   display: 'flex',
                   gap: 12,
                   justifyContent: 'center',
                   pointerEvents: 'all',
                   flexWrap: 'wrap',
+                  opacity: prefersReducedMotion ? 1 : buttonOpacity,
+                  scale: prefersReducedMotion ? 1 : buttonScale,
                 }}
               >
                 <button className="hz-btn-outline" onClick={onSecondaryClick}>
@@ -403,7 +442,7 @@ export default function HeroScrollZoom({
                 <button className="hz-btn-solid" onClick={onPrimaryClick}>
                   {primaryLabel}
                 </button>
-              </div>
+              </motion.div>
             </motion.div>
 
           </div>
